@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
-import java.util.List;
+
 
 @RestController
 @RequestMapping(path="/users")
@@ -51,5 +51,12 @@ public class UserController {
     @ResponseBody
     public void updateUserByName(@PathVariable ("name") String name) {
          userService.updateUserByFirstName(name);
+    }
+
+    @GetMapping(path="/confirmCode/{name}")
+    @ResponseBody
+    public User confirmUser(@PathVariable ("name") String name) {
+        return  userService.enableUser(name);
+
     }
 }

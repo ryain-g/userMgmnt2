@@ -8,12 +8,10 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-//indicate this class contain beans
+
 @Configuration
-//generate the REST API documents for RESTful web services
 @EnableSwagger2
 public class SwaggerConfiguration {
-    //define this method as bean
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)

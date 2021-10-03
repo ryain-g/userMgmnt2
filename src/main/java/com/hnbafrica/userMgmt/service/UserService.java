@@ -6,7 +6,6 @@ import com.hnbafrica.userMgmt.entity.User;
 import com.hnbafrica.userMgmt.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.standard.expression.MessageExpression;
 
 import javax.mail.MessagingException;
 
@@ -39,9 +38,10 @@ public class UserService {
         }catch (MessagingException e){
             e.printStackTrace();
         }
-        String note = "email is sent";
-        return note;
-
+        finally {
+            String note = "email is sent";
+            return note;
+        }
     }
 
     public String checkIUserExist(String name){
@@ -67,11 +67,16 @@ public class UserService {
             User user = userRepository.findUserByFirstName(name);
             return user;
         }
-
-
     }
 
     public void updateUserByFirstName(String name){
         userRepository.updateUserByFirstName(name);
     }
+
+    public User enableUser(String name){
+        User user = getUserByFirstName(name);
+        user.setEnable(true);
+       return userRepository.save(user);
+    }
+
 }

@@ -30,6 +30,7 @@ public class EmailService {
     public void sendVerificationEmail(User user) throws MessagingException{
 
         String subject= "Verification Email";
+        String verify = "http://localhost:8085/users/confirmCode/";
 
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message,
@@ -39,7 +40,7 @@ public class EmailService {
         helper.setTo(user.getEmail());
         helper.setSubject(subject);
         helper.setText("To confirm your account, please click here : "
-                +"http://localhost:8085/confirm-account?code="+user.getVerificationCode());
+                +verify+user.getFirstName());
         helper.setFrom("innovationhnb@gmail.com");
         emailSender.send(message);
     }
