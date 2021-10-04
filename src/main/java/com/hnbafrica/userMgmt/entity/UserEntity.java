@@ -1,5 +1,6 @@
 package com.hnbafrica.userMgmt.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -7,14 +8,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Data
 @Entity
 @Table(name = "users")
-@Data
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
+@JsonIgnoreProperties(value={ "password" },allowSetters= true)
+public class UserEntity extends BaseEntity{
 
     @Column(name="first_name")
     private String firstName;
@@ -28,7 +26,7 @@ public class User {
     private String email;
 
     @Column(name = "phone")
-    private int phone;
+    private String phone;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(

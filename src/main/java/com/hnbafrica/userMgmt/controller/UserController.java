@@ -1,17 +1,23 @@
 package com.hnbafrica.userMgmt.controller;
 
 
-import com.hnbafrica.userMgmt.entity.User;
+import com.hnbafrica.userMgmt.dto.User;
+import com.hnbafrica.userMgmt.entity.UserEntity;
 import com.hnbafrica.userMgmt.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import java.util.List;
 
 
 @RestController
-@RequestMapping(path="/users")
+@RequestMapping(path="/user")
 public class UserController {
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     UserService userService;
 //    @Autowired
@@ -20,11 +26,6 @@ public class UserController {
     @PostMapping(path="/addUser")
     public void addNewUser (@RequestBody User user) {
         userService.addUser(user);
-        try{
-        userService.sendVerificationEmail(user);
-        }catch (MessagingException e){
-            e.printStackTrace();
-        }
     }
 //    @GetMapping (path="confirm-code")
 //    @ResponseBody
@@ -35,14 +36,14 @@ public class UserController {
 
     @GetMapping(path="/allUsers")
     @ResponseBody
-    public Iterable<User> getAllUser() {
+    public List<User> getAllUser() {
         return userService.getUserList();
     }
 
 
     @GetMapping(path="/getUser/{name}")
     @ResponseBody
-    public User getUserByName(@PathVariable ("name") String name) {
+    public UserEntity getUserByName(@PathVariable ("name") String name) {
         return userService.getUserByFirstName(name);
     }
 
@@ -53,10 +54,10 @@ public class UserController {
          userService.updateUserByFirstName(name);
     }
 
-    @GetMapping(path="/confirmCode/{name}")
+    @GetMapping(path="/confirmCode/{code}")
     @ResponseBody
-    public User confirmUser(@PathVariable ("name") String name) {
-        return  userService.enableUser(name);
-
+    public int confirmUser(@PathVariable ("code") String code) {
+        log.info("Enable user with code , {}",code);
+        return  userService.enableUser(code);
     }
 }

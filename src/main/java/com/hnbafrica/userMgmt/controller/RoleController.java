@@ -1,7 +1,6 @@
 package com.hnbafrica.userMgmt.controller;
 
 import com.hnbafrica.userMgmt.entity.Role;
-import com.hnbafrica.userMgmt.entity.User;
 import com.hnbafrica.userMgmt.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

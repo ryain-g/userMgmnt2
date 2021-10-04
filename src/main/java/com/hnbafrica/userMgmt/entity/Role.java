@@ -7,12 +7,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "roles")
 @Data
-public class Role {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-
+public class Role extends BaseEntity{
     @Column(name = "role")
     private String role;
 }
