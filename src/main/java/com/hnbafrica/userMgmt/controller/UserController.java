@@ -18,13 +18,9 @@ public class UserController {
 //    ConfirmCode confirmCode;
 
     @PostMapping(path="/addUser")
-    public void addNewUser (@RequestBody User user) {
+    public String addNewUser (@RequestBody User user) {
         userService.addUser(user);
-        try{
-        userService.sendVerificationEmail(user);
-        }catch (MessagingException e){
-            e.printStackTrace();
-        }
+        return "redirect://addUser?success";
     }
 //    @GetMapping (path="confirm-code")
 //    @ResponseBody
