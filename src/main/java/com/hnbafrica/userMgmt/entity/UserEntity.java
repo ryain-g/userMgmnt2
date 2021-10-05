@@ -41,7 +41,7 @@ public class UserEntity extends BaseEntity{
     @Column(updatable = false)
     private String verificationCode;
 
-    public User(String firstName, String lastName, String password, String email, int phone) {
+    public UserEntity(String firstName, String lastName, String password, String email, String phone) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;

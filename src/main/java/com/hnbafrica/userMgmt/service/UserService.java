@@ -20,113 +20,22 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import java.util.List;
 
+public interface UserService {
 
-@Service
-public class UserService {
 
-    private static final Logger log = LoggerFactory.getLogger(UserService.class);
+         String getVerificationCode();
+         void addUser(User user);
+         String sendVerificationEmail(UserEntity user);
 
-    @Autowired
-    UserRepository userRepository;
+         String checkIUserExist(String name);
 
-    @Autowired
-    Uuid uuid;
+         List<User> getUserList();
 
-    @Autowired
-    EmailService emailService;
+         UserEntity getUserByFirstName(String name);
 
-    @Autowired
-    Email email;
+         void updateUserByFirstName(String name);
 
-    @Autowired
-    Environment environment;
+         int enableUser(String code);
 
-    @Value("${server.address}")
-    private String serverAddress;
-
-    @Value("${server.port}")
-    private String serverPort;
-
-    @Value("${user.activation.api}")
-    private String userActivationApi;
-
-    @Value("${server.http}")
-    private String serverHttp;
-
-    @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    public String getVerificationCode(){
-        return uuid.createCode();
-    }
-
-    public void addUser(User user){
-        modelMapper.getConfiguration().setAmbiguityIgnored(true);
-        UserEntity userEntity=modelMapper.map(user,UserEntity.class);
-        String name = userEntity.getFirstName();
-        userEntity.setVerificationCode(getVerificationCode());
-        userEntity.setEnable(false);
-        userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
-        UserEntity savedUser=userRepository.save(userEntity);
-         //use future class here
-        try {
-            sendVerificationEmail(savedUser);
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-    }
-    public String sendVerificationEmail(UserEntity user) throws MessagingException{
-        try {
-            String url = serverHttp+serverAddress+":"+serverPort+userActivationApi+user.getVerificationCode();
-            log.info("User Activation URL {}",url);
-            email.setFrom("innovationhnb@gmail.com");
-            email.setTo(user.getEmail());
-            email.setSubject("Verification Email");
-            email.setBody("To confirm your account, please click here : " +url);
-            emailService.send(email);
-        }catch (MessagingException e){
-            e.printStackTrace();
-        }
-        finally {
-            String note = "email is sent";
-            return note;
-        }
-    }
-
-    public String checkIUserExist(String name){
-       String userName = userRepository.findUserByFirstName(name).getFirstName();
-       if(userName.contains(name)){
-           return userName;
-       }
-       else{
-           return null;
-       }
-    }
-
-    public List<User> getUserList(){
-       List<UserEntity> userList= userRepository.findAll();
-        return modelMapper.map(userList, new TypeToken<List<User>>() {}.getType());
-    }
-
-    public UserEntity getUserByFirstName(String name){
-        if(checkIUserExist(name).isEmpty()){
-            return null;
-        }
-        else {
-            UserEntity user = userRepository.findUserByFirstName(name);
-            return user;
-        }
-    }
-
-    public void updateUserByFirstName(String name){
-        userRepository.updateUserByFirstName(name);
-    }
-
-    public int enableUser(String code){
-       return userRepository.enableUser(code);
-    }
 
 }
