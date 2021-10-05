@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.mail.MailException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -72,24 +74,34 @@ public class UserServiceImp implements UserService{
         userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
         UserEntity savedUser=userRepository.save(userEntity);
         //use future class here
+        try{
+            sendVerificationEmail(userEntity);
+        } catch ( InterruptedException e){
+            e.printStackTrace();
+
+        }
+       
+
 
     }
-    public String sendVerificationEmail(UserEntity user)  {
-        try {
+    @Async
+    public String sendVerificationEmail(UserEntity user) throws MailException, InterruptedException   {
+        Thread.sleep(30000);
+       
             String url = serverHttp+serverAddress+":"+serverPort+userActivationApi+user.getVerificationCode();
             log.info("User Activation URL {}",url);
             email.setFrom("innovationhnb@gmail.com");
             email.setTo(user.getEmail());
             email.setSubject("Verification Email");
             email.setBody("To confirm your account, please click here : " +url);
-            emailService.send(email);
-        }catch (MessagingException e){
-            e.printStackTrace();
-        }
-        finally {
-            String note = "email is sent";
-            return note;
-        }
+            try {
+                emailService.send(email);
+            }catch (MessagingException e){
+                e.printStackTrace();
+            }
+            finally {
+                return "sending email";
+            }
     }
 
     public String checkIUserExist(String name){

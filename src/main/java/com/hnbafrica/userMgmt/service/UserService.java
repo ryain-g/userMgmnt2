@@ -25,7 +25,7 @@ public interface UserService {
 
          String getVerificationCode();
          void addUser(User user);
-         String sendVerificationEmail(UserEntity user);
+//         String sendVerificationEmail(UserEntity user);
 
          String checkIUserExist(String name);
 
